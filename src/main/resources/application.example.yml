@@ -1,0 +1,23 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  h2:
+    console:
+        path: /h2
+        enabled: true
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+    properties:
+        hibernate:
+            format_sql: true
+
+
+OPENAI_API_KEY: 
+SECRET: 
+OPENAI_ORGANIZATION: 
+MAILGUN_ID:
