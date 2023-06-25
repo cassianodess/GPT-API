@@ -12,6 +12,10 @@ public class AuthService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private EmailService emailService;
+
+
     public User signUp(User user) {
         try {
 
@@ -21,7 +25,6 @@ public class AuthService {
         
             user = repository.save(user);
     
-            EmailService emailService = new EmailService();
             Boolean sent = emailService.sendEmail(
                 String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId()),
                 user.getEmail(),
