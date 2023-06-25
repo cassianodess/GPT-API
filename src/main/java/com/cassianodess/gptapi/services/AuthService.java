@@ -33,8 +33,7 @@ public class AuthService {
             repository.deleteById(user.getId());
 
         } catch (Exception e) {
-            System.err.println("DEU RUIM NO SIGNUP");
-            System.err.println(e);
+            throw e;
         }
         return null;
     }
