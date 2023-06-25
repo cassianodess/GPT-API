@@ -1,7 +1,6 @@
 package com.cassianodess.gptapi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cassianodess.gptapi.models.GPTRequest;
 import com.cassianodess.gptapi.models.GPTResponse;
 import com.cassianodess.gptapi.services.GPTService;
-import com.cassianodess.gptapi.services.GPTService.ChatGPTRequest;
-import com.cassianodess.gptapi.services.GPTService.ChatGPTResponse;
-import com.cassianodess.gptapi.services.GPTService.Choice;
 
 import reactor.core.publisher.Mono;
 
