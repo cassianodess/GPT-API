@@ -13,23 +13,35 @@ public class AuthService {
     private UserRepository repository;
 
     public User signUp(User user) {
-        if (repository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("email already exists");
-        }
-        user = repository.save(user);
+        try {
 
-        EmailService emailService = new EmailService();
-        Boolean sent = emailService.sendEmail(String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId()), user.getEmail(), "Ativação da conta ChatGPT Crone");
-        if(sent) {
-            return user;
+            if (repository.findByEmail(user.getEmail()).isPresent()) {
+                throw new RuntimeException("email already exists");
+            }
+        
+            user = repository.save(user);
+    
+            EmailService emailService = new EmailService();
+            Boolean sent = emailService.sendEmail(
+                String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId()),
+                user.getEmail(),
+                "Ativação da conta ChatGPT Crone"
+            );
+            if(sent) {
+                return user;
+            }
+            repository.deleteById(user.getId());
+
+        } catch (Exception e) {
+            System.err.println("DEU RUIM NO SIGNUP");
+            System.err.println(e);
         }
-        repository.deleteById(user.getId());
         return null;
     }
 
     public User signIn(String email, String password) {
-        if ((!repository.findByEmail(email).isPresent()) || !(repository.findByEmail(email).get().getPassword().equals(password))) {
-            throw new RuntimeException("invalid credentials");
+        if ((!repository.findByEmail(email).isPresent()) || !(repository.findByEmail(email).get().getPassword().equals(password)) || !repository.findByEmail(email).get().getIsActivate()) {
+            throw new RuntimeException("invalid credentials or email not activated");
         }
         return repository.findByEmail(email).get();
 

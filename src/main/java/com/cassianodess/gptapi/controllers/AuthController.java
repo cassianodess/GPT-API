@@ -1,8 +1,11 @@
 package com.cassianodess.gptapi.controllers;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +30,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(service.signUp(user));
+        user = service.signUp(user);
+        if(user != null) {
+            return ResponseEntity.ok(user);
+        }
+
+        return ResponseEntity.badRequest().body(null);
 
     }
 
@@ -37,11 +45,11 @@ public class AuthController {
     }
 
     @GetMapping("/activate/{id}")
-    public ResponseEntity<User> activateAccount(@PathVariable String id) {
+    public ResponseEntity<Void> activateAccount(@PathVariable String id) {
 
         User user = service.activateAccount(id);
         if (user != null) {
-            return ResponseEntity.ok(user);
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(String.format("http://localhost:4200/home/%s", user.getId()))).build();
         }
         return ResponseEntity.badRequest().body(null);
     }
