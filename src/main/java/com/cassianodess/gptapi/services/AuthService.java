@@ -19,9 +19,12 @@ public class AuthService {
         user = repository.save(user);
 
         EmailService emailService = new EmailService();
-        Boolean sent = emailService.sendEmail(String.format("Clique no link e ative sua conta: http://localhost:4200/activate/%s", user.getId()), user.getEmail(), "Ativação da conta ChatGPT Crone");
-
-        return user;
+        Boolean sent = emailService.sendEmail(String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId()), user.getEmail(), "Ativação da conta ChatGPT Crone");
+        if(sent) {
+            return user;
+        }
+        repository.deleteById(user.getId());
+        return null;
     }
 
     public User signIn(String email, String password) {
@@ -30,5 +33,11 @@ public class AuthService {
         }
         return repository.findByEmail(email).get();
 
+    }
+
+     public User activateAccount(String id) {
+        User user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setIsActivate(true);
+        return repository.save(user);
     }
 }
