@@ -1,6 +1,7 @@
 package com.cassianodess.gptapi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cassianodess.gptapi.models.User;
@@ -15,6 +16,8 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private PasswordEncoder bcrypt;
 
     public User signUp(User user) {
         try {
@@ -22,7 +25,10 @@ public class AuthService {
             if (repository.findByEmail(user.getEmail()).isPresent()) {
                 throw new RuntimeException("email already exists");
             }
-        
+
+            String encryptedPassword = bcrypt.encode(user.getPassword());
+
+            user.setPassword(encryptedPassword);
             user = repository.save(user);
     
             Boolean sent = emailService.sendEmail(
@@ -42,14 +48,15 @@ public class AuthService {
     }
 
     public User signIn(String email, String password) {
-        if ((!repository.findByEmail(email).isPresent()) || !(repository.findByEmail(email).get().getPassword().equals(password)) || !repository.findByEmail(email).get().getIsActivate()) {
+        
+        if ((!repository.findByEmail(email).isPresent()) || !bcrypt.matches(password, repository.findByEmail(email).get().getPassword()) || !repository.findByEmail(email).get().getIsActivate()) {
             throw new RuntimeException("invalid credentials or email not activated");
         }
         return repository.findByEmail(email).get();
 
     }
 
-     public User activateAccount(String id) {
+    public User activateAccount(String id) {
         User user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         user.setIsActivate(true);
         return repository.save(user);
