@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cassianodess.gptapi.models.Auth;
+import com.cassianodess.gptapi.models.AuthResponse;
 import com.cassianodess.gptapi.models.User;
 import com.cassianodess.gptapi.services.AuthService;
 
@@ -33,23 +34,24 @@ public class AuthController {
             return ResponseEntity.ok(user);
         }
 
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().build();
 
     }
 
     @PostMapping
-    public ResponseEntity<User> login(@RequestBody Auth auth) {
+    public ResponseEntity<AuthResponse> login(@RequestBody Auth auth) {
         return ResponseEntity.ok(service.signIn(auth.email(), auth.password()));
     }
 
     @GetMapping("/activate/{id}")
     public ResponseEntity<Void> activateAccount(@PathVariable UUID id) {
-
+        
         User user = service.activateAccount(id);
         if (user != null) {
+            //TODO: replace locahost to production URI
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(String.format("http://localhost:4200/home/%s", user.getId()))).build();
         }
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().build();
     }
 
 }
