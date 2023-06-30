@@ -1,5 +1,7 @@
 package com.cassianodess.gptapi.models;
 
+import java.util.UUID;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.Column;
@@ -22,9 +24,8 @@ import lombok.NoArgsConstructor;
 public class Conversation {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
     
     @Column(nullable = false)
     private String question;

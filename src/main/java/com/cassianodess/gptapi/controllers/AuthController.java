@@ -1,6 +1,7 @@
 package com.cassianodess.gptapi.controllers;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class AuthController {
     }
 
     @GetMapping("/activate/{id}")
-    public ResponseEntity<Void> activateAccount(@PathVariable String id) {
+    public ResponseEntity<Void> activateAccount(@PathVariable UUID id) {
 
         User user = service.activateAccount(id);
         if (user != null) {

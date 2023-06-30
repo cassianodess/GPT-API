@@ -1,5 +1,7 @@
 package com.cassianodess.gptapi.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +22,7 @@ public class UserController {
     private UserService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable String id) {
+    public ResponseEntity<User> findById(@PathVariable UUID id) {
         User user = service.findById(id);
         if (user != null && user.getIsActivate()) {
             return ResponseEntity.ok(user);

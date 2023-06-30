@@ -2,6 +2,7 @@ package com.cassianodess.gptapi.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,9 +26,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "chats")
 public class Chat {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
     
     @OneToMany(mappedBy = "chat")
     private List<Conversation> conversations = new ArrayList<Conversation>();

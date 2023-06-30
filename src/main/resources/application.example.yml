@@ -3,24 +3,20 @@ server:
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-  h2:
-    console:
-        path: /h2
-        enabled: true
+    username: 
+    password: 
   jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
     show-sql: true
     defer-datasource-initialization: true
-    properties:
-        hibernate:
-            format_sql: true
-
 
 OPENAI_API_KEY: 
 OPENAI_ORGANIZATION: 
 SECRET: 
-GMAIL_EMAIL: 
+GMAIL_USERNAME: 
 GMAIL_PASSWORD: 
 GMAIL_SMTP: 
 GMAIL_PORT:

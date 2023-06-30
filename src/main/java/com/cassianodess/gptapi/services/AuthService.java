@@ -1,5 +1,7 @@
 package com.cassianodess.gptapi.services;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,7 +58,7 @@ public class AuthService {
 
     }
 
-    public User activateAccount(String id) {
+    public User activateAccount(UUID id) {
         User user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         user.setIsActivate(true);
         return repository.save(user);
