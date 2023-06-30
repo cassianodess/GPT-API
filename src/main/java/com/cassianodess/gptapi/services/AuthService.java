@@ -70,7 +70,7 @@ public class AuthService implements UserDetailsService {
             throw new RuntimeException("invalid credentials or email not activated");
         }
         User user =  repository.findByEmail(email).get();
-        return new AuthResponse(generateJWT(user));
+        return new AuthResponse(generateJWT(user), user);
 
     }
 

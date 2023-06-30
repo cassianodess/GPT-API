@@ -42,13 +42,18 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private String getToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-
-        if(authHeader == null) {
-            return null;
+        try {
+            String authHeader = request.getHeader("Authorization").replace("Bearer", "").trim();
+            
+            if(authHeader == null || authHeader.length() == 0) {
+                return null;
+            }
+    
+            return authHeader;
+        } catch (Exception e) {
+            System.err.println(e);
         }
-
-        return authHeader.replace("Bearer ", "");
+        return null;
 
     }
     

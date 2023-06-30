@@ -15,10 +15,10 @@ public class GPTService {
 
     public GPTService(WebClient.Builder builder, @Value("${OPENAI_API_KEY}") String apiKey) {
         this.webClient = builder
-                .baseUrl("https://api.openai.com/v1/completions")
-                .defaultHeader("Content-Type", "application/json;charset=UTF-8")
-                .defaultHeader("Authorization", String.format("Bearer %s", apiKey))
-                .build();
+          .baseUrl("https://api.openai.com/v1/completions")
+          .defaultHeader("Content-Type", "application/json;charset=UTF-8")
+          .defaultHeader("Authorization", String.format("Bearer %s", apiKey))
+          .build();
     }
 
     public Mono<ChatGPTResponse> chatGPT(String prompt) {

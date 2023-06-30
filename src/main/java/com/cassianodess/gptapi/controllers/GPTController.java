@@ -24,11 +24,10 @@ public class GPTController {
     private GPTService service;
 
     @PostMapping
-    public Mono<ResponseEntity<GPTResponse>> AskMe(@RequestBody GPTRequest body) {
+    public ResponseEntity<GPTResponse> AskMe(@RequestBody GPTRequest body) {
         return service.chatGPT(body.question())
-                .map(response -> ResponseEntity
-                        .ok(new GPTResponse(200, body.question(), response.choices().get(0).text())))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+            .map(response -> ResponseEntity.ok(new GPTResponse(200, body.question(), response.choices().get(0).text())))
+            .defaultIfEmpty(ResponseEntity.notFound().build()).block();
     }
 
     @GetMapping("/clear-cache")
