@@ -1,10 +1,11 @@
 package com.cassianodess.gptapi.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import com.cassianodess.gptapi.models.ChatGPTRequest;
+import com.cassianodess.gptapi.models.ChatGPTResponse;
 
 import reactor.core.publisher.Mono;
 
@@ -26,14 +27,5 @@ public class GPTService {
         return webClient.post().bodyValue(request).retrieve().bodyToMono(ChatGPTResponse.class);
     }
 
-    public record ChatGPTRequest(String model, String prompt, Double temperature, Integer max_tokens, Double top_p,
-            Double frequency_penalty, Double presence_penalty) {
-    }
-
-    public record ChatGPTResponse(List<Choice> choices) {
-    }
-
-    public record Choice(String text) {
-    }
 
 }
