@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cassianodess.gptapi.models.Chat;
 import com.cassianodess.gptapi.models.GPTRequestBody;
 import com.cassianodess.gptapi.models.GPTResponse;
 import com.cassianodess.gptapi.models.User;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/gpt")
-    public ResponseEntity<User> AskMe(@RequestBody GPTRequestBody body, @PathVariable UUID id) {
+    public ResponseEntity<Chat> AskMe(@RequestBody GPTRequestBody body, @PathVariable UUID id) {
         GPTResponse gptResponse = GPTservice.chatGPT(body.question())
         .map(response -> new GPTResponse(200, body.question(),
         response.choices().get(0).text().trim()))

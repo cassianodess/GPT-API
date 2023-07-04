@@ -25,7 +25,7 @@ public class UserService {
     }
 
     @Transactional
-    public User saveChat(UUID userId, GPTRequestBody gptBody, GPTResponse messageResponse) {
+    public Chat saveChat(UUID userId, GPTRequestBody gptBody, GPTResponse messageResponse) {
 
         try {
             if (gptBody.chatId() == null) {
@@ -40,7 +40,9 @@ public class UserService {
                 
                 user.getChats().add(chat);
                 
-                return repository.save(user);
+                user = repository.save(user);
+
+                return user.getChats().get(user.getChats().size()-1);
 
             } else {
 
@@ -50,15 +52,17 @@ public class UserService {
                 message.setQuestion(messageResponse.question());
                 message.setResponse(messageResponse.response());
 
-                user.getChats()
+                Chat chat = (Chat)user.getChats()
                 .stream()
                 .filter(_chat -> _chat.getId().equals(gptBody.chatId()))
                 .collect(Collectors.toList())
-                .get(0)
-                .getMessages()
+                .get(0);
+
+                chat.getMessages()
                 .add(message);
 
-                return repository.save(user);
+                repository.save(user);
+                return chat;
             }
 
         } catch (Exception e) {
