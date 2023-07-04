@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     
     private Boolean isActivate = false;
     
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade= CascadeType.ALL)
     private List<Chat> chats = new ArrayList<Chat>();
 
     @Override

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.cassianodess.gptapi.models.AuthResponse;
 import com.cassianodess.gptapi.models.User;
 import com.cassianodess.gptapi.repositories.UserRepository;
@@ -88,7 +87,7 @@ public class AuthService implements UserDetailsService {
     public String generateJWT(User user) {
         try {
 
-            Instant expiresAt = LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+            Instant expiresAt = LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
 
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT
@@ -103,20 +102,6 @@ public class AuthService implements UserDetailsService {
         }
     }
 
-    public String validateToken(String token) {
-       try {
-         Algorithm algorithm = Algorithm.HMAC256(secret);
-         return JWT
-         .require(algorithm)
-         .withIssuer("auth-gpt")
-         .build()
-         .verify(token)
-         .getSubject();
-       } catch (JWTVerificationException e) {
-        System.err.println(e);
-        throw new RuntimeException("", e);
-       }
-
-    }
+    
 
 }
