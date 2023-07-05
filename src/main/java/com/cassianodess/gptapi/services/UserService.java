@@ -25,20 +25,27 @@ public class UserService {
     @Autowired
     private ChatRepository chatRepository;
 
+    @Autowired
+    private GPTService GPTservice;
+
     public User findById(UUID id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Transactional
-    public Chat saveChat(UUID userId, GPTRequestBody gptBody, GPTResponse messageResponse) {
+    public Chat saveChat(UUID userId, GPTRequestBody body) {
 
         try {
-            if (gptBody.chatId() == null) {
+            if (body.chatId() == null) {
+                GPTResponse gptResponse = GPTservice.chatGPT(body.question())
+                .map(response -> new GPTResponse(200, body.question(), response.choices().get(0).text().trim()))
+                .block();
+
                 User user = repository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
                 Message message = new Message();
-                message.setQuestion(messageResponse.question());
-                message.setResponse(messageResponse.response());
+                message.setQuestion(gptResponse.question());
+                message.setResponse(gptResponse.response());
                 
                 Chat chat = new Chat();
                 chat.getMessages().add(message);
@@ -53,15 +60,28 @@ public class UserService {
 
                 User user = repository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
                 
-                Message message = new Message();
-                message.setQuestion(messageResponse.question());
-                message.setResponse(messageResponse.response());
-
                 Chat chat = (Chat)user.getChats()
                 .stream()
-                .filter(_chat -> _chat.getId().equals(gptBody.chatId()))
+                .filter(_chat -> _chat.getId().equals(body.chatId()))
                 .collect(Collectors.toList())
                 .get(0);
+
+                String context = "";
+
+                for(int i = 0; i< chat.getMessages().size(); i++) {
+                    context += String.format("USER: %s\nBOT: %s\n", chat.getMessages().get(i).getQuestion(), chat.getMessages().get(i).getResponse());
+                }
+
+                context += String.format("USER: %s\n", body.question());
+                
+                GPTResponse gptResponse = GPTservice.chatGPT(context)
+                .map(response -> new GPTResponse(200, body.question(), response.choices().get(0).text().trim().replace("BOT: ", "")))
+                .block();
+                
+                Message message = new Message();
+                message.setQuestion(gptResponse.question());
+                message.setResponse(gptResponse.response());
+
 
                 chat.getMessages()
                 .add(message);

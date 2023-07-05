@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cassianodess.gptapi.models.Chat;
 import com.cassianodess.gptapi.models.GPTRequestBody;
-import com.cassianodess.gptapi.models.GPTResponse;
 import com.cassianodess.gptapi.models.User;
-import com.cassianodess.gptapi.services.GPTService;
 import com.cassianodess.gptapi.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,9 +29,6 @@ public class UserController {
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    private GPTService GPTservice;
 
     @GetMapping("/{id}")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
@@ -48,12 +43,7 @@ public class UserController {
     @PostMapping("/{id}/gpt")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Chat> AskMe(@RequestBody GPTRequestBody body, @PathVariable UUID id) {
-        GPTResponse gptResponse = GPTservice.chatGPT(body.question())
-        .map(response -> new GPTResponse(200, body.question(),
-        response.choices().get(0).text().trim()))
-        .block();
-
-        return ResponseEntity.ok(service.saveChat(id, body, gptResponse));
+        return ResponseEntity.ok(service.saveChat(id, body));
 
     }
 

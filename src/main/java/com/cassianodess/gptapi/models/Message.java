@@ -23,10 +23,10 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String question;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String response;
     
 }

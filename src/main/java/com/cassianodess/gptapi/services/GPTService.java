@@ -23,7 +23,7 @@ public class GPTService {
     }
 
     public Mono<ChatGPTResponse> chatGPT(String prompt) {
-        ChatGPTRequest request = new ChatGPTRequest("text-davinci-003", prompt, 0.3, 150, 1.0, 0.0, 0.0);
+        ChatGPTRequest request = new ChatGPTRequest("text-davinci-003", prompt, 0.7, 150, 1.0, 0.0, 0.0);
         return webClient.post().bodyValue(request).retrieve().bodyToMono(ChatGPTResponse.class);
     }
 
