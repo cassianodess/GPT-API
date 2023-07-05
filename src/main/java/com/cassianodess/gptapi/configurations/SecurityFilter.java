@@ -53,9 +53,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     
             return authHeader;
         } catch (Exception e) {
-            System.err.println("Route without auth " + e);
+            return null;
         }
-        return null;
+        
 
     }
     

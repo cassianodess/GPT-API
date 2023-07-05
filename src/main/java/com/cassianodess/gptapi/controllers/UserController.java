@@ -21,6 +21,9 @@ import com.cassianodess.gptapi.models.User;
 import com.cassianodess.gptapi.services.GPTService;
 import com.cassianodess.gptapi.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/users")
@@ -33,6 +36,7 @@ public class UserController {
     private GPTService GPTservice;
 
     @GetMapping("/{id}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<User> findById(@PathVariable UUID id) {
         User user = service.findById(id);
         if (user != null && user.getIsActivate()) {
@@ -42,6 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/gpt")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Chat> AskMe(@RequestBody GPTRequestBody body, @PathVariable UUID id) {
         GPTResponse gptResponse = GPTservice.chatGPT(body.question())
         .map(response -> new GPTResponse(200, body.question(),
@@ -53,6 +58,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/gpt/delete/{chatId}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<List<Chat>> deleteChat(@PathVariable UUID id, @PathVariable UUID chatId) {
         return ResponseEntity.ok(service.deleteChat(id, chatId));
     }
