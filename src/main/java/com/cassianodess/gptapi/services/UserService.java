@@ -1,5 +1,6 @@
 package com.cassianodess.gptapi.services;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import com.cassianodess.gptapi.models.GPTRequestBody;
 import com.cassianodess.gptapi.models.GPTResponse;
 import com.cassianodess.gptapi.models.Message;
 import com.cassianodess.gptapi.models.User;
+import com.cassianodess.gptapi.repositories.ChatRepository;
 import com.cassianodess.gptapi.repositories.UserRepository;
 
 @Service
@@ -19,6 +21,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private ChatRepository chatRepository;
 
     public User findById(UUID id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
@@ -70,6 +75,15 @@ public class UserService {
             throw e;
         }
         
+    }
+
+    public List<Chat> deleteChat(UUID userId, UUID chatId) {
+        User user = repository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Chat chat = chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
+        user.getChats().remove(chat);
+        chatRepository.delete(chat);
+        return repository.save(user).getChats();
+
     }
 
 }
