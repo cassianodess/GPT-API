@@ -17,6 +17,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.cassianodess.gptapi.models.AuthResponse;
+import com.cassianodess.gptapi.models.Email;
 import com.cassianodess.gptapi.models.User;
 import com.cassianodess.gptapi.repositories.UserRepository;
 
@@ -47,14 +48,16 @@ public class AuthService implements UserDetailsService {
             user.setPassword(encryptedPassword);
             user = repository.save(user);
     
-            Boolean sent = emailService.sendEmail(
-                String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId()),
+            Boolean sent = emailService.sendEmail(new Email(
                 user.getEmail(),
-                "Ativação da conta ChatGPT Crone"
-            );
+                "Ativação da conta ChatGPT Crone",
+                String.format("Clique no link e ative sua conta: http://localhost:8080/api/auth/activate/%s", user.getId())
+            ));
+
             if(sent) {
                 return user;
             }
+            
             repository.deleteById(user.getId());
 
         } catch (Exception e) {
